@@ -170,7 +170,7 @@ def comparison_section(df: pd.DataFrame):
         xaxis=axis(title=unit, zeroline=True), yaxis=axis(),
         plot_bgcolor="white", paper_bgcolor="white",
     )
-    st.plotly_chart(fig, use_container_width=True, key="cmp_chart")
+    st.plotly_chart(fig, width="stretch", key="cmp_chart")
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Forecasters", f"{len(sel)}")
@@ -187,7 +187,7 @@ def comparison_section(df: pd.DataFrame):
     )
     order = [i for i in pio.available_indicators(df) if i in wide.columns]
     wide = wide[order].rename(columns=pio.indicator_label)
-    st.dataframe(wide.style.format("{:,.2f}"), use_container_width=True)
+    st.dataframe(wide.style.format("{:,.2f}"), width="stretch")
     _download(wide.reset_index(), f"thailand_forecasts_{year}.csv", "dl_cmp")
 
 
@@ -231,7 +231,7 @@ def revisions_section(df: pd.DataFrame):
         hovermode="x unified", legend=legend_bottom(),
     )
     apply_time_xaxis(fig)
-    st.plotly_chart(fig, use_container_width=True, key="rev_chart")
+    st.plotly_chart(fig, width="stretch", key="rev_chart")
 
     st.subheader("Latest revision")
     st.caption("Change between each institution's two most recent vintages.")
@@ -255,7 +255,7 @@ def revisions_section(df: pd.DataFrame):
         .map(lambda v: "color: #C00000" if isinstance(v, float) and v < 0
              else ("color: #548235" if isinstance(v, float) and v > 0 else ""),
              subset=["Change"]),
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
     _download(table, f"forecast_revisions_{indicator}_{year}.csv", "dl_rev")
 
@@ -309,7 +309,7 @@ def consensus_section(df: pd.DataFrame):
         hovermode="x unified", legend=legend_bottom(),
     )
     apply_time_xaxis(fig)
-    st.plotly_chart(fig, use_container_width=True, key="con_chart")
+    st.plotly_chart(fig, width="stretch", key="con_chart")
 
     latest = cons.iloc[-1]
     first = cons.iloc[0]
@@ -386,7 +386,7 @@ def outturn_section(df: pd.DataFrame):
             "outturn years — this fills in once a forecast year closes out."
         )
         st.dataframe(outturn.tail(10).style.format({"growth": "{:,.2f}"}),
-                     use_container_width=True, hide_index=True)
+                     width="stretch", hide_index=True)
         return
 
     scored["error"] = scored["value"] - scored["growth"]
@@ -415,7 +415,7 @@ def outturn_section(df: pd.DataFrame):
         xaxis=axis(title="target year", dtick=1), yaxis=axis(title="%", zeroline=True),
         plot_bgcolor="white", paper_bgcolor="white", legend=legend_bottom(),
     )
-    st.plotly_chart(fig, use_container_width=True, key="out_chart")
+    st.plotly_chart(fig, width="stretch", key="out_chart")
 
     st.subheader("Forecast error by institution")
     st.caption("Forecast minus outturn, in percentage points. Positive = too optimistic.")
@@ -429,7 +429,7 @@ def outturn_section(df: pd.DataFrame):
     st.dataframe(
         err.style.format("{:+,.2f}", na_rep="—").map(
             _error_shade, subset=[str(c) for c in year_cols]),
-        use_container_width=True,
+        width="stretch",
     )
     _download(scored[["institution", "target_year", "value", "growth", "error"]],
               "forecast_vs_outturn.csv", "dl_out")
@@ -590,7 +590,7 @@ def detail_comparison_section(df: pd.DataFrame):
         xaxis=axis(), yaxis=axis(title="%", zeroline=True),
         plot_bgcolor="white", paper_bgcolor="white", legend=legend_bottom(),
     )
-    st.plotly_chart(fig, use_container_width=True, key="det_gdp_chart")
+    st.plotly_chart(fig, width="stretch", key="det_gdp_chart")
 
 
 # ── Data & sources ────────────────────────────────────────────────────────────
@@ -622,7 +622,7 @@ def data_section(df: pd.DataFrame):
     show["vintage"] = show["vintage"].dt.strftime("%Y-%m-%d")
     show["indicator"] = show["indicator"].map(pio.indicator_label).fillna(show["indicator"])
     st.dataframe(
-        show, use_container_width=True, hide_index=True,
+        show, width="stretch", hide_index=True,
         column_config={
             "source_url": st.column_config.LinkColumn("source_url", display_text="Open ↗"),
         },

@@ -1,3 +1,7 @@
-pandas
-streamlit
-plotly
+# Pinned to the versions this app was verified against. Streamlit's layout
+# API is actively churning — `use_container_width` was deprecated with a
+# removal date that has already passed — so an unpinned deploy can break on
+# a release that lands between pushes.
+pandas==2.2.3
+streamlit==1.61.1
+plotly==6.9.0

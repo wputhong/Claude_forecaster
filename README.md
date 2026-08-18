@@ -9,6 +9,27 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+## Deploying to Streamlit Community Cloud
+
+1. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+2. **Create app** → **Deploy a public app from GitHub** (this repo is private,
+   so authorize Streamlit for private repos when prompted).
+3. Fill in:
+   - Repository: `wputhong/Claude_forecaster`
+   - Branch: `main`
+   - Main file path: `app.py`
+4. Under **Advanced settings**, set Python version to **3.11** — the version
+   the pinned dependencies were tested against.
+5. Deploy. The URL is chosen at deploy time; you can set a custom subdomain
+   in the same dialog.
+
+Dependencies are pinned in `requirements.txt` on purpose. Streamlit's layout
+API is actively churning, so an unpinned deploy can break on a release that
+lands between pushes. When bumping, run the app locally first.
+
+Nothing here needs secrets — no API keys, no database. Every input is a CSV
+committed to the repo, so a deploy is just install-and-run.
+
 ## Views
 
 | View | What it shows |
