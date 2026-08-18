@@ -1,7 +1,9 @@
-# Pinned to the versions this app was verified against. Streamlit's layout
-# API is actively churning — `use_container_width` was deprecated with a
-# removal date that has already passed — so an unpinned deploy can break on
-# a release that lands between pushes.
-pandas==2.2.3
-streamlit==1.61.1
-plotly==6.9.0
+# Floors are the versions this app was verified against; ceilings stop a
+# major release from breaking it. Deliberately ranges, not exact pins:
+# streamlit pulls in pyarrow (a heavy C++ dependency), and over-constraining
+# the resolver is how a deploy ends up compiling it from source instead of
+# taking a prebuilt wheel — which on a small cloud instance means a build
+# that runs for tens of minutes or runs out of memory.
+pandas>=2.2,<3
+streamlit>=1.61,<2
+plotly>=6.9,<7

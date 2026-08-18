@@ -23,12 +23,35 @@ streamlit run app.py
 5. Deploy. The URL is chosen at deploy time; you can set a custom subdomain
    in the same dialog.
 
-Dependencies are pinned in `requirements.txt` on purpose. Streamlit's layout
-API is actively churning, so an unpinned deploy can break on a release that
-lands between pushes. When bumping, run the app locally first.
-
 Nothing here needs secrets — no API keys, no database. Every input is a CSV
 committed to the repo, so a deploy is just install-and-run.
+
+`requirements.txt` uses version *ranges*, not exact pins. The floors are what
+the app was verified against; the ceilings stop a major release breaking it.
+Exact pins are tempting but backfire here: streamlit depends on pyarrow, a
+heavy C++ package, and over-constraining the resolver is how a deploy ends up
+building it from source rather than taking a prebuilt wheel.
+
+### If the app is slow to load or never appears
+
+The app itself is not the bottleneck — it reads a 305-row CSV and renders in
+well under a second once running. Slowness is almost always the environment:
+
+1. **It is asleep.** Community Cloud suspends apps after inactivity; the next
+   visit takes ~30s to wake. This is the most common cause and needs no fix.
+2. **It is still building.** A first deploy installs pandas, pyarrow and
+   streamlit. Open **Manage app → logs** (bottom right of the app page) and
+   watch. If a log line shows pyarrow or pandas *building a wheel* rather than
+   downloading one, the Python version has no matching wheel — set Python to
+   **3.11** in the app's settings and reboot.
+3. **It ran out of memory.** The free tier caps at about 1 GB. A source build
+   of pyarrow will exceed it; the app itself will not come close.
+4. **Streamlit lost access to the repo.** This repo is private, so if the
+   GitHub authorization was revoked the app cannot pull and will hang. Check
+   under Streamlit's GitHub app permissions.
+
+The logs under **Manage app** name the actual cause; the four above cover
+essentially every case.
 
 ## Views
 
