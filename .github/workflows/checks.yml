@@ -1,0 +1,35 @@
+name: Checks
+
+# Fast, dependency-light consistency checks. The forecast table is
+# hand-maintained — published forecasts arrive as PDFs and press
+# conferences, not a feed — so a typo would otherwise reach the dashboard.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        # pandas only: check_projections.py stubs streamlit.
+        run: pip install pandas==2.2.3
+
+      - name: Validate the forecast table
+        run: python scripts/check_projections.py
+
+      - name: Byte-compile
+        run: python -m compileall -q . -x '\.venv|venv'
